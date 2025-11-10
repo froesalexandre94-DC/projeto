@@ -1,13 +1,6 @@
-// app/layout.jsx
 import './globals.css';
 import { Inter } from 'next/font/google';
-import dynamic from 'next/dynamic';
-
-// ⛔ Importa o painel de acessibilidade somente no client (sem SSR)
-const AccessibilityPanel = dynamic(
-  () => import('@components/AccessibilityPanel'),
-  { ssr: false }
-);
+import AccessibilityPanelClient from '@components/AccessibilityPanelClient';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,10 +24,8 @@ export default function RootLayout({ children }) {
         </div>
 
         {/* ♿ Painel de acessibilidade flutuante */}
-        <AccessibilityPanel />
+        <AccessibilityPanelClient />
       </body>
     </html>
   );
 }
-
-
