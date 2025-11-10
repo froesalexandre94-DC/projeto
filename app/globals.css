@@ -113,3 +113,36 @@ tr:hover td {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ♿ Acessibilidade */
+
+/* 🔳 Alto contraste */
+body.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+body.high-contrast a {
+  color: #00ffff !important;
+}
+body.high-contrast .card {
+  background-color: #111 !important;
+  border: 1px solid #00ffff !important;
+}
+
+/* 🔠 Texto ampliado */
+body.large-text {
+  font-size: 1.25em !important;
+  line-height: 1.6 !important;
+}
+
+/* 🔷 Foco visível */
+*:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* 🔘 Transição suave quando ativa/desativa */
+body {
+  transition: all 0.3s ease-in-out;
+}
+
