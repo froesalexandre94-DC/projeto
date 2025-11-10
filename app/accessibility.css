@@ -1,0 +1,32 @@
+/* ♿ Acessibilidade */
+
+/* 🔳 Alto contraste */
+body.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+  filter: invert(1) hue-rotate(180deg);
+}
+body.high-contrast a {
+  color: #00ffff !important;
+}
+body.high-contrast .card {
+  background-color: #111 !important;
+  border: 1px solid #00ffff !important;
+}
+
+/* 🔠 Texto ampliado */
+body.large-text {
+  font-size: 1.25em !important;
+  line-height: 1.6 !important;
+}
+
+/* 🔷 Foco visível */
+*:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* 🔘 Transição suave para ativar/desativar */
+body {
+  transition: all 0.3s ease-in-out;
+}
