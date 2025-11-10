@@ -114,44 +114,7 @@ export default function DashboardPage() {
           Produtos com Baixo Estoque (menos de 50)
         </h2>
 
-        {/* 📊 Gráfico de Barras */}
-        <Plot
-          data={[
-            {
-              x: baixoEstoque.map((i) => i.produto),
-              y: baixoEstoque.map((i) => i.quantidade),
-              type: "bar",
-              text: baixoEstoque.map((i) => i.quantidade.toString()),
-              textposition: "auto",
-              marker: {
-                color: baixoEstoque.map((i) => getColor(i.quantidade)),
-              },
-              name: "Quantidade atual",
-            },
-            {
-              // Linha de limite mínimo (50)
-              x: baixoEstoque.map((i) => i.produto),
-              y: baixoEstoque.map(() => 50),
-              type: "scatter",
-              mode: "lines",
-              line: { color: "rgb(239,68,68)", dash: "dash" },
-              name: "Limite mínimo (50)",
-            },
-          ]}
-          layout={{
-            height: 400,
-            margin: { t: 40, l: 50, r: 10, b: 80 },
-            title: "Necessitam de Reposição",
-            plot_bgcolor: "#111827",
-            paper_bgcolor: "#111827",
-            font: { color: "#fff" },
-            xaxis: { automargin: true },
-            yaxis: { title: "Estoque Atual" },
-            legend: { orientation: "h", y: -0.2 },
-          }}
-          config={{ displayModeBar: false, responsive: true }}
-          aria-label="Gráfico de produtos com baixo estoque"
-        />
+
 
         {/* 🧾 Tabela de Produtos */}
         <div className="mt-6">
