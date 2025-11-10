@@ -7,24 +7,35 @@ export default function AccessibilityPanel() {
   const [largeText, setLargeText] = useState(false);
   const [reading, setReading] = useState(false);
 
-  // 🔹 Carrega preferências do localStorage
+  // 🔹 Garante que o código só roda no client
+  const isClient = typeof window !== "undefined";
+
+  // 🔹 Carrega preferências do localStorage no client
   useEffect(() => {
+    if (!isClient) return;
     const hc = localStorage.getItem("highContrast") === "true";
     const lt = localStorage.getItem("largeText") === "true";
     setHighContrast(hc);
     setLargeText(lt);
-  }, []);
+  }, [isClient]);
 
   // 🔹 Atualiza classes no body e salva preferências
   useEffect(() => {
+    if (!isClient) return;
     document.body.classList.toggle("high-contrast", highContrast);
     document.body.classList.toggle("large-text", largeText);
     localStorage.setItem("highContrast", highContrast);
     localStorage.setItem("largeText", largeText);
-  }, [highContrast, largeText]);
+  }, [highContrast, largeText, isClient]);
 
   // 🔊 Leitura em voz alta
   const toggleReading = () => {
+    if (!isClient) return;
+    if (!("speechSynthesis" in window)) {
+      alert("A leitura em voz alta não é suportada neste navegador.");
+      return;
+    }
+
     if (!reading) {
       const text = document.body.innerText;
       const utterance = new SpeechSynthesisUtterance(text);
@@ -90,7 +101,7 @@ export default function AccessibilityPanel() {
   );
 }
 
-// 🔘 Componente para o switch
+// 🔘 Subcomponente ToggleSwitch
 function ToggleSwitch({ label, checked, onChange }) {
   return (
     <div className="flex items-center justify-between mb-3">
