@@ -1,12 +1,10 @@
-// app/layout.jsx
 import './globals.css';
-import './accessibility.css'; // 🔹 Importa o CSS de acessibilidade
 import { Inter } from 'next/font/google';
 import dynamic from 'next/dynamic';
 
 // ⛔ Importa o painel de acessibilidade somente no client (sem SSR)
 const AccessibilityPanel = dynamic(
-  () => import('@/components/AccessibilityPanel'),
+  () => import('@components/AccessibilityPanel'),
   { ssr: false }
 );
 
