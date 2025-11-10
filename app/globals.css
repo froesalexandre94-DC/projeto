@@ -120,6 +120,7 @@ tr:hover td {
 body.high-contrast {
   background-color: #000 !important;
   color: #fff !important;
+  filter: invert(1) hue-rotate(180deg);
 }
 body.high-contrast a {
   color: #00ffff !important;
@@ -141,8 +142,10 @@ body.large-text {
   outline-offset: 2px;
 }
 
-/* 🔘 Transição suave quando ativa/desativa */
+/* 🔘 Transição suave para ativar/desativar */
 body {
   transition: all 0.3s ease-in-out;
 }
+
+
 
