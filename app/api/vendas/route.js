@@ -1,6 +1,7 @@
 // app/api/vendas/route.js
 import { NextResponse } from "next/server";
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@lib/supabase';
+
 
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
