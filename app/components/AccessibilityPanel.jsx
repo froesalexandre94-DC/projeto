@@ -101,7 +101,7 @@ export default function AccessibilityPanel() {
   );
 }
 
-// 🔘 Subcomponente ToggleSwitch
+// 🔘 Subcomponente: botão de alternância acessível
 function ToggleSwitch({ label, checked, onChange }) {
   return (
     <div className="flex items-center justify-between mb-3">
