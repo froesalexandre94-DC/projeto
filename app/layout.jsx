@@ -1,5 +1,6 @@
 // app/layout.jsx
 import './globals.css';
+import './accessibility.css'; // 🔹 Importa o CSS de acessibilidade
 import { Inter } from 'next/font/google';
 import dynamic from 'next/dynamic';
 
