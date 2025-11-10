@@ -1,9 +1,8 @@
 // app/api/vendas/route.js
 import { NextResponse } from "next/server";
-import { createClient } from '@lib/supabase';
+import { createClient } from "@supabase/supabase-js"; // ✅ Import correto
 
-
-
+// Configuração do cliente Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
