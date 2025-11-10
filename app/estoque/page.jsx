@@ -24,7 +24,6 @@ export default function EstoquePage() {
   const [totalProdutos, setTotalProdutos] = useState(0);
   const [totalPecas, setTotalPecas] = useState(0);
 
-  // === BUSCAR PRODUTOS ===
   async function buscarProdutos() {
     setLoading(true);
     const { data, error } = await supabase
@@ -43,7 +42,6 @@ export default function EstoquePage() {
     setLoading(false);
   }
 
-  // === CALCULAR TOTAIS ===
   function calcularTotais(lista) {
     const totalItens = lista.length;
     const totalQtd = lista.reduce((sum, item) => sum + (item.quantidade || 0), 0);
@@ -51,15 +49,12 @@ export default function EstoquePage() {
     setTotalPecas(totalQtd);
   }
 
-  // === ADICIONAR PRODUTO ===
   async function adicionarProduto() {
     if (!novoProduto.codigo) {
       alert('O código é obrigatório.');
       return;
     }
-
     const { error } = await supabase.from('estoque').insert([novoProduto]);
-
     if (error) {
       console.error('Erro ao adicionar produto:', error);
       alert('Erro ao adicionar produto.');
@@ -77,7 +72,6 @@ export default function EstoquePage() {
     }
   }
 
-  // === ATUALIZAR PRODUTO ===
   async function atualizarProduto() {
     const { error } = await supabase
       .from('estoque')
@@ -94,7 +88,6 @@ export default function EstoquePage() {
     }
   }
 
-  // === EXCLUIR PRODUTO ===
   async function excluirProduto(codigo) {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;
     const { error } = await supabase.from('estoque').delete().eq('codigo', codigo);
@@ -108,7 +101,6 @@ export default function EstoquePage() {
     }
   }
 
-  // === PESQUISA DINÂMICA ===
   const produtosFiltrados = produtos.filter((p) => {
     const termo = filtro.toLowerCase();
     return (
@@ -118,12 +110,10 @@ export default function EstoquePage() {
     );
   });
 
-  // === AO CARREGAR ===
   useEffect(() => {
     buscarProdutos();
   }, []);
 
-  // === VOLTAR AO DASHBOARD ===
   const voltarDashboard = () => router.push('/dashboard');
 
   return (
@@ -139,7 +129,7 @@ export default function EstoquePage() {
         </button>
       </div>
 
-      {/* === ESTATÍSTICAS === */}
+      {/* ESTATÍSTICAS */}
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <p className="text-gray-400 text-sm">Total de Produtos</p>
@@ -151,7 +141,7 @@ export default function EstoquePage() {
         </div>
       </div>
 
-      {/* === CAMPO DE PESQUISA === */}
+      {/* PESQUISA */}
       <div className="mb-4">
         <input
           type="text"
@@ -162,7 +152,30 @@ export default function EstoquePage() {
         />
       </div>
 
-      {/* === TABELA === */}
+      {/* ADICIONAR PRODUTO (agora logo abaixo da pesquisa) */}
+      <div className="mb-8 bg-gray-900 p-4 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-2">Adicionar Produto</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {Object.keys(novoProduto).map((key) => (
+            <input
+              key={key}
+              type={key === 'quantidade' ? 'number' : 'text'}
+              placeholder={key}
+              value={novoProduto[key]}
+              onChange={(e) => setNovoProduto({ ...novoProduto, [key]: e.target.value })}
+              className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
+            />
+          ))}
+        </div>
+        <button
+          onClick={adicionarProduto}
+          className="mt-4 bg-green-600 px-4 py-2 rounded hover:bg-green-700"
+        >
+          Adicionar
+        </button>
+      </div>
+
+      {/* TABELA */}
       {loading ? (
         <p>Carregando...</p>
       ) : erro ? (
@@ -219,71 +232,52 @@ export default function EstoquePage() {
         </div>
       )}
 
-      {/* === FORMULÁRIO DE ADIÇÃO === */}
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-2">Adicionar Produto</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {Object.keys(novoProduto).map((key) => (
-            <input
-              key={key}
-              type={key === 'quantidade' ? 'number' : 'text'}
-              placeholder={key}
-              value={novoProduto[key]}
-              onChange={(e) => setNovoProduto({ ...novoProduto, [key]: e.target.value })}
-              className="p-2 rounded bg-gray-900 border border-gray-700 text-white"
-            />
-          ))}
-        </div>
-        <button
-          onClick={adicionarProduto}
-          className="mt-4 bg-green-600 px-4 py-2 rounded hover:bg-green-700"
-        >
-          Adicionar
-        </button>
-      </div>
-
-      {/* === FORMULÁRIO DE EDIÇÃO === */}
+      {/* MODAL DE EDIÇÃO */}
       {editando && (
-        <div className="mt-6 bg-gray-900 p-4 rounded-lg">
-          <h2 className="text-xl font-semibold mb-2">Editar Produto</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {Object.keys(editando).map((key) =>
-              key === 'codigo' ? (
-                <input
-                  key={key}
-                  type="text"
-                  value={editando[key]}
-                  disabled
-                  className="p-2 rounded bg-gray-800 border border-gray-700 text-gray-400"
-                />
-              ) : (
-                <input
-                  key={key}
-                  type={key === 'quantidade' ? 'number' : 'text'}
-                  placeholder={key}
-                  value={editando[key]}
-                  onChange={(e) => setEditando({ ...editando, [key]: e.target.value })}
-                  className="p-2 rounded bg-gray-900 border border-gray-700 text-white"
-                />
-              )
-            )}
-          </div>
-          <div className="mt-4 space-x-2">
-            <button
-              onClick={atualizarProduto}
-              className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Salvar
-            </button>
-            <button
-              onClick={() => setEditando(null)}
-              className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancelar
-            </button>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl">
+            <h2 className="text-xl font-semibold mb-4">Editar Produto</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.keys(editando).map((key) =>
+                key === 'codigo' ? (
+                  <input
+                    key={key}
+                    type="text"
+                    value={editando[key]}
+                    disabled
+                    className="p-2 rounded bg-gray-800 border border-gray-700 text-gray-400"
+                  />
+                ) : (
+                  <input
+                    key={key}
+                    type={key === 'quantidade' ? 'number' : 'text'}
+                    placeholder={key}
+                    value={editando[key]}
+                    onChange={(e) => setEditando({ ...editando, [key]: e.target.value })}
+                    className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                  />
+                )
+              )}
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={atualizarProduto}
+                className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setEditando(null)}
+                className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 }
+
+
