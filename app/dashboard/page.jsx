@@ -120,48 +120,117 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* 🔴 Produtos com Baixo Estoque */}
-      <div className="card bg-gray-900 p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-3 text-red-400">
-          Produtos com Baixo Estoque (menos de 50)
-        </h2>
-        <Plot
-          data={[
-            {
-              x: baixoEstoque.map((i) => i.produto),
-              y: baixoEstoque.map((i) => i.quantidade),
-              type: 'bar',
-              text: baixoEstoque.map((i) => i.quantidade.toString()),
-              textposition: 'auto',
-              marker: {
-                color: baixoEstoque.map((i) => getColor(i.quantidade)),
-              },
-              name: 'Quantidade atual',
-            },
-            {
-              // Linha de limite mínimo (50)
-              x: baixoEstoque.map((i) => i.produto),
-              y: baixoEstoque.map(() => 50),
-              type: 'scatter',
-              mode: 'lines',
-              line: { color: 'rgb(239,68,68)', dash: 'dash' },
-              name: 'Limite mínimo (50)',
-            },
-          ]}
-          layout={{
-            height: 400,
-            margin: { t: 40, l: 50, r: 10, b: 80 },
-            title: 'Necessitam de Reposição',
-            plot_bgcolor: '#111827',
-            paper_bgcolor: '#111827',
-            font: { color: '#fff' },
-            xaxis: { automargin: true },
-            yaxis: { title: 'Estoque Atual' },
-            legend: { orientation: 'h', y: -0.2 },
-          }}
-          config={{ displayModeBar: false, responsive: true }}
-        />
+{/* 🔴 Produtos com Baixo Estoque */}
+<div className="card bg-gray-900 p-6 rounded-lg shadow">
+  <h2 className="text-xl font-semibold mb-3 text-red-400">
+    Produtos com Baixo Estoque (menos de 50)
+  </h2>
+
+  {/* 📊 Gráfico de Barras */}
+  <Plot
+    data={[
+      {
+        x: baixoEstoque.map((i) => i.produto),
+        y: baixoEstoque.map((i) => i.quantidade),
+        type: "bar",
+        text: baixoEstoque.map((i) => i.quantidade.toString()),
+        textposition: "auto",
+        marker: {
+          color: baixoEstoque.map((i) => getColor(i.quantidade)),
+        },
+        name: "Quantidade atual",
+      },
+      {
+        // Linha de limite mínimo (50)
+        x: baixoEstoque.map((i) => i.produto),
+        y: baixoEstoque.map(() => 50),
+        type: "scatter",
+        mode: "lines",
+        line: { color: "rgb(239,68,68)", dash: "dash" },
+        name: "Limite mínimo (50)",
+      },
+    ]}
+    layout={{
+      height: 400,
+      margin: { t: 40, l: 50, r: 10, b: 80 },
+      title: "Necessitam de Reposição",
+      plot_bgcolor: "#111827",
+      paper_bgcolor: "#111827",
+      font: { color: "#fff" },
+      xaxis: { automargin: true },
+      yaxis: { title: "Estoque Atual" },
+      legend: { orientation: "h", y: -0.2 },
+    }}
+    config={{ displayModeBar: false, responsive: true }}
+  />
+
+  {/* 🧾 Tabela de Produtos */}
+  <div className="mt-6">
+    <h3 className="text-lg font-medium text-red-300 mb-3">
+      Lista de produtos com baixo estoque
+    </h3>
+
+    {baixoEstoque.length > 0 ? (
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-700 text-sm text-gray-200">
+          <thead className="bg-gray-800 text-gray-300 uppercase text-xs">
+            <tr>
+              <th className="px-4 py-2 border-b border-gray-700 text-left">Código</th>
+              <th className="px-4 py-2 border-b border-gray-700 text-left">Produto</th>
+              <th className="px-4 py-2 border-b border-gray-700 text-center">Quantidade</th>
+              <th className="px-4 py-2 border-b border-gray-700 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {baixoEstoque.map((item, index) => {
+              const status =
+                item.quantidade < 20
+                  ? "Crítico"
+                  : item.quantidade < 40
+                  ? "Atenção"
+                  : "Baixo";
+              const color =
+                item.quantidade < 20
+                  ? "text-red-500"
+                  : item.quantidade < 40
+                  ? "text-yellow-400"
+                  : "text-green-400";
+
+              return (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-800 transition-colors"
+                >
+                  <td className="px-4 py-2 border-b border-gray-700">
+                    {item.codigo}
+                  </td>
+                  <td className="px-4 py-2 border-b border-gray-700">
+                    {item.produto}
+                  </td>
+                  <td
+                    className={`px-4 py-2 border-b border-gray-700 text-center font-semibold ${color}`}
+                  >
+                    {item.quantidade}
+                  </td>
+                  <td
+                    className={`px-4 py-2 border-b border-gray-700 text-center ${color}`}
+                  >
+                    {status}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+    ) : (
+      <p className="text-gray-400 text-sm italic">
+        Nenhum produto com baixo estoque 🎉
+      </p>
+    )}
+  </div>
+</div>
+
     </main>
   );
 }
