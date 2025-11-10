@@ -2,13 +2,124 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------
+   Estilos globais do projeto
+   "Análise Operacional"
+--------------------------------*/
+html,
+body {
+  @apply bg-gray-950 text-gray-200 antialiased scroll-smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold text-gray-100;
+}
+
+p, span, li, td, th {
+  @apply text-gray-300;
+}
+
+/* ------------------------------
+   Layout principal
+--------------------------------*/
+.container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+/* ------------------------------
+   Cartões (cards)
+--------------------------------*/
+.card {
+  @apply bg-gray-900 rounded-2xl shadow-lg p-5 border border-gray-800 transition-all duration-300 hover:shadow-blue-500/20;
+}
+
+/* ------------------------------
+   Botões
+--------------------------------*/
+button, .btn {
+  @apply bg-blue-600 hover:bg-blue-700 text-white px-20 py-2 rounded-lg font-semibold transition-colors duration-200;
+}
+
+button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* ------------------------------
+   Inputs e filtros
+--------------------------------*/
+input, select, textarea {
+  @apply bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full;
+}
+
+input::placeholder {
+  @apply text-gray-500;
+}
+
+/* ------------------------------
+   Tabelas
+--------------------------------*/
+table {
+  @apply w-full border-collapse text-sm;
+}
+
+th {
+  @apply bg-gray-800 text-left px-3 py-2 font-semibold text-gray-800;
+}
+
+td {
+  @apply px-3 py-2 border-t border-gray-800;
+}
+
+tr:hover td {
+  @apply bg-gray-800/40 transition-colors duration-150;
+}
+
+/* ------------------------------
+   Acessibilidade
+--------------------------------*/
+:focus-visible {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-gray-900;
+}
+
+/* ------------------------------
+   Scrollbar customizado
+--------------------------------*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-blue-600;
+}
+
+/* ------------------------------
+   Animações sutis
+--------------------------------*/
+.fade-in {
+  @apply opacity-0 transition-opacity duration-700 ease-out;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ♿ Acessibilidade */
 
 /* 🔳 Alto contraste */
 body.high-contrast {
   background-color: #000 !important;
   color: #fff !important;
-  filter: invert(1) hue-rotate(180deg);
 }
 body.high-contrast a {
   color: #00ffff !important;
@@ -30,7 +141,8 @@ body.large-text {
   outline-offset: 2px;
 }
 
-/* 🔘 Transição suave ao ativar/desativar */
+/* 🔘 Transição suave quando ativa/desativa */
 body {
   transition: all 0.3s ease-in-out;
 }
+
