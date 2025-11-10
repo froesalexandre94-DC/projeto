@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         <div className="container mx-auto px-4 py-6">
           <header className="mb-8">
             <h1 className="text-3xl font-bold text-blue-400">Gerenciamento Operacional</h1>
-            <p className="text-gray-400">Grenciamento, monitoramento e insights de desempenho</p>
+            <p className="text-gray-400">Gerenciamento de desempenho</p>
           </header>
 
           {/* conteúdo da página */}
@@ -29,4 +29,5 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
 
