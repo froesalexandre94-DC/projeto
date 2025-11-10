@@ -21,9 +21,11 @@ export default function EstoquePage() {
     quantidade: 0,
   });
   const [editando, setEditando] = useState(null);
+  const [mostrandoNovo, setMostrandoNovo] = useState(false);
   const [totalProdutos, setTotalProdutos] = useState(0);
   const [totalPecas, setTotalPecas] = useState(0);
 
+  // === BUSCAR PRODUTOS ===
   async function buscarProdutos() {
     setLoading(true);
     const { data, error } = await supabase
@@ -42,6 +44,7 @@ export default function EstoquePage() {
     setLoading(false);
   }
 
+  // === CALCULAR TOTAIS ===
   function calcularTotais(lista) {
     const totalItens = lista.length;
     const totalQtd = lista.reduce((sum, item) => sum + (item.quantidade || 0), 0);
@@ -49,11 +52,13 @@ export default function EstoquePage() {
     setTotalPecas(totalQtd);
   }
 
+  // === ADICIONAR PRODUTO ===
   async function adicionarProduto() {
     if (!novoProduto.codigo) {
       alert('O código é obrigatório.');
       return;
     }
+
     const { error } = await supabase.from('estoque').insert([novoProduto]);
     if (error) {
       console.error('Erro ao adicionar produto:', error);
@@ -68,10 +73,12 @@ export default function EstoquePage() {
         Unidade: '',
         quantidade: 0,
       });
+      setMostrandoNovo(false);
       buscarProdutos();
     }
   }
 
+  // === ATUALIZAR PRODUTO ===
   async function atualizarProduto() {
     const { error } = await supabase
       .from('estoque')
@@ -88,6 +95,7 @@ export default function EstoquePage() {
     }
   }
 
+  // === EXCLUIR PRODUTO ===
   async function excluirProduto(codigo) {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;
     const { error } = await supabase.from('estoque').delete().eq('codigo', codigo);
@@ -101,6 +109,7 @@ export default function EstoquePage() {
     }
   }
 
+  // === PESQUISA FILTRADA ===
   const produtosFiltrados = produtos.filter((p) => {
     const termo = filtro.toLowerCase();
     return (
@@ -141,37 +150,20 @@ export default function EstoquePage() {
         </div>
       </div>
 
-      {/* PESQUISA */}
-      <div className="mb-4">
+      {/* PESQUISA + BOTÃO NOVO PRODUTO */}
+      <div className="flex items-center justify-between mb-4">
         <input
           type="text"
           placeholder="Pesquisar por código, nome ou GTIN/EAN..."
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
-          className="w-full p-2 rounded bg-gray-900 border border-gray-700 text-white"
+          className="w-full md:w-2/3 p-2 rounded bg-gray-900 border border-gray-700 text-white"
         />
-      </div>
-
-      {/* ADICIONAR PRODUTO (agora logo abaixo da pesquisa) */}
-      <div className="mb-8 bg-gray-900 p-4 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-2">Adicionar Produto</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {Object.keys(novoProduto).map((key) => (
-            <input
-              key={key}
-              type={key === 'quantidade' ? 'number' : 'text'}
-              placeholder={key}
-              value={novoProduto[key]}
-              onChange={(e) => setNovoProduto({ ...novoProduto, [key]: e.target.value })}
-              className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
-            />
-          ))}
-        </div>
         <button
-          onClick={adicionarProduto}
-          className="mt-4 bg-green-600 px-4 py-2 rounded hover:bg-green-700"
+          onClick={() => setMostrandoNovo(true)}
+          className="ml-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
         >
-          Adicionar
+          ➕ Novo Produto
         </button>
       </div>
 
@@ -232,10 +224,47 @@ export default function EstoquePage() {
         </div>
       )}
 
-      {/* MODAL DE EDIÇÃO */}
+      {/* MODAL NOVO PRODUTO */}
+      {mostrandoNovo && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fadeIn">
+          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl transform scale-95 opacity-0 animate-popupIn">
+            <h2 className="text-xl font-semibold mb-4">Novo Produto</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.keys(novoProduto).map((key) => (
+                <input
+                  key={key}
+                  type={key === 'quantidade' ? 'number' : 'text'}
+                  placeholder={key}
+                  value={novoProduto[key]}
+                  onChange={(e) =>
+                    setNovoProduto({ ...novoProduto, [key]: e.target.value })
+                  }
+                  className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                />
+              ))}
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={adicionarProduto}
+                className="bg-green-600 px-4 py-2 rounded hover:bg-green-700"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setMostrandoNovo(false)}
+                className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EDITAR PRODUTO */}
       {editando && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fadeIn">
+          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl transform scale-95 opacity-0 animate-popupIn">
             <h2 className="text-xl font-semibold mb-4">Editar Produto</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Object.keys(editando).map((key) =>
@@ -253,7 +282,9 @@ export default function EstoquePage() {
                     type={key === 'quantidade' ? 'number' : 'text'}
                     placeholder={key}
                     value={editando[key]}
-                    onChange={(e) => setEditando({ ...editando, [key]: e.target.value })}
+                    onChange={(e) =>
+                      setEditando({ ...editando, [key]: e.target.value })
+                    }
                     className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
                   />
                 )
@@ -279,5 +310,7 @@ export default function EstoquePage() {
     </div>
   );
 }
+
+
 
 
