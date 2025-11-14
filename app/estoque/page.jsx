@@ -137,11 +137,11 @@ export default function EstoquePage() {
           ← Voltar ao Dashboard
         </button>
          <button
-            onClick={() => router.push('/estoque')}
+            onClick={() => router.push('/sugestao')}
             className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all"
-            aria-label="Ir para página de Estoque"
+            aria-label="Ir para página de Sugestao de Compra"
           >
-            Ir para Estoque
+            Sugestão de Compra
           </button>
       </div>
 
@@ -317,6 +317,7 @@ export default function EstoquePage() {
     </div>
   );
 }
+
 
 
 
