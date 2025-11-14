@@ -129,15 +129,7 @@ export default function EstoquePage() {
     <div className="p-6 text-white">
       {/* TOPO */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">📦 Estoque</h1>
-
-         <button
-            onClick={() => router.push('/sugestao')}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all"
-            aria-label="Ir para página de Sugestao de Compra"
-          >
-            Sugestão de Compra
-          </button>    
+        <h1 className="text-2xl font-bold">📦 Estoque</h1>   
         <button
           onClick={voltarDashboard}
           className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg shadow"
@@ -156,6 +148,13 @@ export default function EstoquePage() {
           <p className="text-gray-400 text-sm">Total de Peças</p>
           <p className="text-xl font-semibold">{totalPecas}</p>
         </div>
+         <button
+            onClick={() => router.push('/sugestao')}
+            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all"
+            aria-label="Ir para página de Sugestao de Compra"
+          >
+            Sugestão de Compra
+          </button> 
       </div>
 
       {/* PESQUISA + BOTÃO NOVO PRODUTO */}
@@ -318,6 +317,7 @@ export default function EstoquePage() {
     </div>
   );
 }
+
 
 
 
