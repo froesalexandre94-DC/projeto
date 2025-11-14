@@ -54,17 +54,17 @@ export default function SugestoesCompraPage() {
     setLoading(false);
   }
 
-  const voltarDashboard = () => router.push('/dashboard');
+  const voltarEstoque = () => router.push('/estoque');
 
   return (
     <main className="p-8 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-blue-400">Sugestão de Compra</h1>
         <button
-          onClick={voltarDashboard}
+          onClick={voltarEstoque}
           className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg shadow"
         >
-          Voltar ao Dashboard
+          Voltar ao Estoque
         </button>
       </div>
 
