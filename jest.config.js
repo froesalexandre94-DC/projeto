@@ -7,6 +7,7 @@ export default {
   moduleFileExtensions: ['js', 'jsx'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    "^@lib/(.*)$": "<rootDir>/lib/$1",
+    "^@/(.*)$": "<rootDir>/$1"   // se você usar alias @/ também
   },
 };
