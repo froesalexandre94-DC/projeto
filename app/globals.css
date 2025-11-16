@@ -16,7 +16,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p, span, li, td, th {
-  @apply text-gray-300;
+  @apply text-blue-300;
 }
 
 /* ------------------------------
@@ -63,7 +63,7 @@ table {
 }
 
 th {
-  @apply bg-gray-800 text-left px-3 py-2 font-semibold text-gray-800;
+  @apply bg-gray-800 text-left px-3 py-2 font-semibold text-blue-800;
 }
 
 td {
