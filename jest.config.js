@@ -6,5 +6,7 @@ export default {
   extensionsToTreatAsEsm: [],
   moduleFileExtensions: ['js', 'jsx'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
 };
-
