@@ -8,6 +8,6 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     "^@lib/(.*)$": "<rootDir>/lib/$1",
-    "^@/(.*)$": "<rootDir>/$1"   // se você usar alias @/ também
+    "^@/(.*)$": "<rootDir>/$1"
   },
 };
