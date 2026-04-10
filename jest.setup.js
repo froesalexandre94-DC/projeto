@@ -8,5 +8,5 @@ global.Request = Request;
 global.Response = Response;
 
 jest.mock("@supabase/supabase-js", () => ({
-  createClient: jest.fn(() => require("./tests/_mocks_/supabase.js").supabase)
+  createClient: jest.fn(() => require("./tests/__mocks__/supabase.js").supabase)
 }));
