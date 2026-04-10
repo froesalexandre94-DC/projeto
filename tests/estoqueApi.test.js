@@ -1,3 +1,14 @@
+// ✅ MOCK TEM QUE VIR PRIMEIRO
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: (data, init) => ({
+      status: init?.status || 200,
+      json: async () => data,
+    }),
+  },
+}));
+
+// ⬇️ IMPORTS DEPOIS DO MOCK
 import { GET, POST } from "@/app/api/estoque/route";
 
 describe("API de Estoque", () => {
