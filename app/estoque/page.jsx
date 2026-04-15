@@ -19,18 +19,20 @@ export default function EstoquePage() {
     Localizacao: '',
     Unidade: '',
     quantidade: 0,
+    preco: 0,
   });
   const [editando, setEditando] = useState(null);
   const [mostrandoNovo, setMostrandoNovo] = useState(false);
   const [totalProdutos, setTotalProdutos] = useState(0);
   const [totalPecas, setTotalPecas] = useState(0);
+  const [totalValor, setTotalValor] = useState(0);
 
   // === BUSCAR PRODUTOS ===
   async function buscarProdutos() {
     setLoading(true);
     const { data, error } = await supabase
       .from('estoque')
-      .select('codigo, "GTIN/EAN", produto, "Localizacao", "Unidade", quantidade')
+      .select('codigo, "GTIN/EAN", produto, "Localizacao", "Unidade", quantidade, preco')
       .order('codigo', { ascending: true });
 
     if (error) {
@@ -47,9 +49,23 @@ export default function EstoquePage() {
   // === CALCULAR TOTAIS ===
   function calcularTotais(lista) {
     const totalItens = lista.length;
-    const totalQtd = lista.reduce((sum, item) => sum + (item.quantidade || 0), 0);
+
+    const totalQtd = lista.reduce(
+      (sum, item) => sum + (Number(item.quantidade) || 0),
+      0
+    );
+
+    const totalDinheiro = lista.reduce(
+      (sum, item) =>
+        sum +
+        (Number(item.quantidade) || 0) *
+        (Number(item.preco) || 0),
+      0
+    );
+
     setTotalProdutos(totalItens);
     setTotalPecas(totalQtd);
+    setTotalValor(totalDinheiro);
   }
 
   // === ADICIONAR PRODUTO ===
@@ -72,6 +88,7 @@ export default function EstoquePage() {
         Localizacao: '',
         Unidade: '',
         quantidade: 0,
+        preco: 0,
       });
       setMostrandoNovo(false);
       buscarProdutos();
@@ -144,17 +161,27 @@ export default function EstoquePage() {
           <p className="text-gray-400 text-sm">Total de Produtos</p>
           <p className="text-xl font-semibold">{totalProdutos}</p>
         </div>
+
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <p className="text-gray-400 text-sm">Total de Peças</p>
           <p className="text-xl font-semibold">{totalPecas}</p>
         </div>
-         <button
-            onClick={() => router.push('/sugestao')}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all"
-            aria-label="Ir para página de Sugestao de Compra"
-          >
-            Sugestão de Compra
-          </button> 
+
+        <div className="bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-gray-400 text-sm">Valor Total em Estoque</p>
+          <p className="text-xl font-semibold">
+            R$ {totalValor.toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+            })}
+          </p>
+        </div>
+
+        <button
+          onClick={() => router.push('/sugestao')}
+          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all"
+        >
+          Sugestão de Compra
+        </button> 
       </div>
 
       {/* PESQUISA + BOTÃO NOVO PRODUTO */}
@@ -230,98 +257,6 @@ export default function EstoquePage() {
           </table>
         </div>
       )}
-
-      {/* MODAL NOVO PRODUTO */}
-      {mostrandoNovo && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl transform scale-95 opacity-0 animate-popupIn">
-            <h2 className="text-xl font-semibold mb-4">Novo Produto</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {Object.keys(novoProduto).map((key) => (
-                <input
-                  key={key}
-                  type={key === 'quantidade' ? 'number' : 'text'}
-                  placeholder={key}
-                  value={novoProduto[key]}
-                  onChange={(e) =>
-                    setNovoProduto({ ...novoProduto, [key]: e.target.value })
-                  }
-                  className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                />
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end space-x-3">
-              <button
-                onClick={adicionarProduto}
-                className="bg-green-600 px-4 py-2 rounded hover:bg-green-700"
-              >
-                Salvar
-              </button>
-              <button
-                onClick={() => setMostrandoNovo(false)}
-                className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL EDITAR PRODUTO */}
-      {editando && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-gray-900 p-6 rounded-lg w-11/12 md:w-2/3 lg:w-1/2 shadow-xl transform scale-95 opacity-0 animate-popupIn">
-            <h2 className="text-xl font-semibold mb-4">Editar Produto</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {Object.keys(editando).map((key) =>
-                key === 'codigo' ? (
-                  <input
-                    key={key}
-                    type="text"
-                    value={editando[key]}
-                    disabled
-                    className="p-2 rounded bg-gray-800 border border-gray-700 text-gray-400"
-                  />
-                ) : (
-                  <input
-                    key={key}
-                    type={key === 'quantidade' ? 'number' : 'text'}
-                    placeholder={key}
-                    value={editando[key]}
-                    onChange={(e) =>
-                      setEditando({ ...editando, [key]: e.target.value })
-                    }
-                    className="p-2 rounded bg-gray-800 border border-gray-700 text-white"
-                  />
-                )
-              )}
-            </div>
-            <div className="mt-6 flex justify-end space-x-3">
-              <button
-                onClick={atualizarProduto}
-                className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
-              >
-                Salvar
-              </button>
-              <button
-                onClick={() => setEditando(null)}
-                className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
-
-
-
-
-
-
-
-
