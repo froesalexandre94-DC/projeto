@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 
 const BarcodeScanner = dynamic(
-  () => import('../components/BarcodeScanner'),
+  () => import('../app/components/BarcodeScanner'),
   {
     ssr: false,
   }
