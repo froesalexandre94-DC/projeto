@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Gerenciamento Operacional',
-  description: 'Gerenciamento de indicadores de estoque e vendas',
+  description: 'Gerenciamento de indicadores de estoque',
 };
 
 export default function RootLayout({ children }) {
