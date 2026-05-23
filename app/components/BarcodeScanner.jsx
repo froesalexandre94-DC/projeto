@@ -8,29 +8,34 @@ export default function BarcodeScanner({
   scannerId,
 }) {
   useEffect(() => {
-    const scanner =
-      new Html5QrcodeScanner(
-        scannerId,
-        {
-          fps: 10,
+    let scanner;
 
-          qrbox: {
-            width: 280,
-            height: 120,
-          },
+    scanner = new Html5QrcodeScanner(
+      scannerId,
+      {
+        fps: 10,
 
-          rememberLastUsedCamera: true,
+        qrbox: {
+          width: 280,
+          height: 120,
+        },
 
-          videoConstraints: {
-            facingMode: 'environment',
+        rememberLastUsedCamera: true,
+
+        videoConstraints: {
+          facingMode: {
+            ideal: 'environment',
           },
         },
-        false
-      );
+      },
+      false
+    );
 
     scanner.render(
       (decodedText) => {
         onScan(decodedText);
+
+        navigator.vibrate?.(200);
 
         scanner
           .clear()
@@ -38,13 +43,16 @@ export default function BarcodeScanner({
             console.error(err)
           );
       },
+
       () => {}
     );
 
     return () => {
-      scanner
-        .clear()
-        .catch(() => {});
+      if (scanner) {
+        scanner
+          .clear()
+          .catch(() => {});
+      }
     };
   }, [onScan, scannerId]);
 
