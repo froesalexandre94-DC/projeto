@@ -5,26 +5,28 @@ import { useEffect } from 'react';
 
 export default function BarcodeScanner({
   onScan,
+  scannerId,
 }) {
   useEffect(() => {
-    const scanner = new Html5QrcodeScanner(
-      'reader',
-      {
-        fps: 10,
+    const scanner =
+      new Html5QrcodeScanner(
+        scannerId,
+        {
+          fps: 10,
 
-        qrbox: {
-          width: 280,
-          height: 120,
+          qrbox: {
+            width: 280,
+            height: 120,
+          },
+
+          rememberLastUsedCamera: true,
+
+          videoConstraints: {
+            facingMode: 'environment',
+          },
         },
-
-        rememberLastUsedCamera: true,
-
-        videoConstraints: {
-          facingMode: 'environment',
-        },
-      },
-      false
-    );
+        false
+      );
 
     scanner.render(
       (decodedText) => {
@@ -40,13 +42,15 @@ export default function BarcodeScanner({
     );
 
     return () => {
-      scanner.clear().catch(() => {});
+      scanner
+        .clear()
+        .catch(() => {});
     };
-  }, [onScan]);
+  }, [onScan, scannerId]);
 
   return (
     <div className="bg-black p-4 rounded-xl">
-      <div id="reader" />
+      <div id={scannerId} />
     </div>
   );
 }
