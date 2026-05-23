@@ -1,10 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@lib/supabase';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+
+const BarcodeScanner = dynamic(
+  () => import('@/components/BarcodeScanner'),
+  { ssr: false }
+);
 
 export default function EstoquePage() {
   const router = useRouter();
@@ -26,6 +32,8 @@ export default function EstoquePage() {
   const [totalProdutos, setTotalProdutos] = useState(0);
   const [totalPecas, setTotalPecas] = useState(0);
   const [totalValor, setTotalValor] = useState(0);
+  const [mostrarScannerPesquisa, setMostrarScannerPesquisa] = useState(false);
+  const [mostrarScannerCadastro, setMostrarScannerCadastro] = useState(false);
 
   // === BUSCAR PRODUTOS ===
   async function buscarProdutos() {
@@ -127,18 +135,48 @@ export default function EstoquePage() {
   }
 
   // === PESQUISA FILTRADA ===
-  const produtosFiltrados = produtos.filter((p) => {
-    const termo = filtro.toLowerCase();
+const produtosFiltrados = useMemo(() => {
+  const termo = filtro.toLowerCase();
+
+  return produtos.filter((p) => {
     return (
       p.codigo?.toLowerCase().includes(termo) ||
       p.produto?.toLowerCase().includes(termo) ||
       p['GTIN/EAN']?.toLowerCase().includes(termo)
     );
   });
+}, [filtro, produtos]);
 
   useEffect(() => {
     buscarProdutos();
   }, []);
+
+  function handleScanPesquisa(codigo) {
+  navigator.vibrate?.(200);
+
+  setFiltro(codigo);
+
+  setMostrarScannerPesquisa(false);
+
+  const produtoEncontrado = produtos.find(
+    (p) => p['GTIN/EAN'] === codigo
+  );
+
+  if (produtoEncontrado) {
+    setEditando(produtoEncontrado);
+  }
+}
+
+function handleScanCadastro(codigo) {
+  navigator.vibrate?.(200);
+
+  setNovoProduto((prev) => ({
+    ...prev,
+    'GTIN/EAN': codigo,
+  }));
+
+  setMostrarScannerCadastro(false);
+}
 
   const voltarDashboard = () => router.push('/dashboard');
 
@@ -194,12 +232,173 @@ export default function EstoquePage() {
           className="w-full md:w-2/3 p-2 rounded bg-gray-900 border border-gray-700 text-white"
         />
         <button
+  onClick={() =>
+    setMostrarScannerPesquisa(!mostrarScannerPesquisa)
+  }
+  className="ml-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded shadow"
+>
+  📷 Escanear
+</button>
+        <button
           onClick={() => setMostrandoNovo(true)}
           className="ml-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
         >
           ➕ Novo Produto
         </button>
       </div>
+      {/* SCANNER PESQUISA */}
+{mostrarScannerPesquisa && (
+  <div className="mb-4">
+    <BarcodeScanner
+      onScan={handleScanPesquisa}
+    />
+  </div>
+)}
+      {/* NOVO PRODUTO */}
+{mostrandoNovo && (
+  <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-6">
+
+    <h2 className="text-xl font-bold mb-4">
+      Novo Produto
+    </h2>
+
+    <div className="grid md:grid-cols-2 gap-4">
+
+      <input
+        placeholder="Código"
+        value={novoProduto.codigo}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            codigo: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+      <input
+        placeholder="Produto"
+        value={novoProduto.produto}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            produto: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+      <div className="flex gap-2">
+
+        <input
+          placeholder="GTIN/EAN"
+          value={novoProduto['GTIN/EAN']}
+          onChange={(e) =>
+            setNovoProduto({
+              ...novoProduto,
+              'GTIN/EAN': e.target.value,
+            })
+          }
+          className="flex-1 p-3 rounded bg-gray-800"
+        />
+
+        <button
+          onClick={() =>
+            setMostrarScannerCadastro(
+              !mostrarScannerCadastro
+            )
+          }
+          className="bg-yellow-600 hover:bg-yellow-700 px-4 rounded"
+        >
+          📷
+        </button>
+
+      </div>
+
+      <input
+        placeholder="Localização"
+        value={novoProduto.Localizacao}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            Localizacao: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+      <input
+        placeholder="Unidade"
+        value={novoProduto.Unidade}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            Unidade: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+      <input
+        type="number"
+        placeholder="Quantidade"
+        value={novoProduto.quantidade}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            quantidade: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+      <input
+        type="number"
+        step="0.01"
+        placeholder="Preço"
+        value={novoProduto.preco}
+        onChange={(e) =>
+          setNovoProduto({
+            ...novoProduto,
+            preco: e.target.value,
+          })
+        }
+        className="p-3 rounded bg-gray-800"
+      />
+
+    </div>
+
+    {/* SCANNER CADASTRO */}
+    {mostrarScannerCadastro && (
+      <div className="mt-4">
+        <BarcodeScanner
+          onScan={handleScanCadastro}
+        />
+      </div>
+    )}
+
+    <div className="flex gap-2 mt-6">
+
+      <button
+        onClick={adicionarProduto}
+        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
+      >
+        Salvar
+      </button>
+
+      <button
+        onClick={() =>
+          setMostrandoNovo(false)
+        }
+        className="bg-gray-700 hover:bg-gray-800 px-4 py-2 rounded"
+      >
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+)}
 
       {/* TABELA */}
       {loading ? (
