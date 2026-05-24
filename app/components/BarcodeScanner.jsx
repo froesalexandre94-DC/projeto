@@ -1,7 +1,7 @@
 'use client';
 
-import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 
 export default function BarcodeScanner({
   onScan,
@@ -10,47 +10,40 @@ export default function BarcodeScanner({
   useEffect(() => {
     let scanner;
 
-    scanner = new Html5QrcodeScanner(
-      scannerId,
-      {
-        fps: 10,
+    async function startScanner() {
+      try {
+        scanner = new Html5Qrcode(scannerId);
 
-        qrbox: {
-          width: 280,
-          height: 120,
-        },
-
-        rememberLastUsedCamera: true,
-
-        videoConstraints: {
-          facingMode: {
-            ideal: 'environment',
+        await scanner.start(
+          { facingMode: 'environment' },
+          {
+            fps: 10,
+            qrbox: {
+              width: 250,
+              height: 120,
+            },
           },
-        },
-      },
-      false
-    );
+          (decodedText) => {
+            onScan(decodedText);
 
-    scanner.render(
-      (decodedText) => {
-        onScan(decodedText);
+            scanner.stop();
+          },
+          () => {}
+        );
+      } catch (err) {
+        console.error(
+          'Erro câmera:',
+          err
+        );
+      }
+    }
 
-        navigator.vibrate?.(200);
-
-        scanner
-          .clear()
-          .catch((err) =>
-            console.error(err)
-          );
-      },
-
-      () => {}
-    );
+    startScanner();
 
     return () => {
       if (scanner) {
         scanner
-          .clear()
+          .stop()
           .catch(() => {});
       }
     };
@@ -58,7 +51,12 @@ export default function BarcodeScanner({
 
   return (
     <div className="bg-black p-4 rounded-xl">
-      <div id={scannerId} />
+      <div
+        id={scannerId}
+        style={{
+          width: '100%',
+        }}
+      />
     </div>
   );
 }
