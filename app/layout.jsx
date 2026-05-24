@@ -1,11 +1,11 @@
-import '@globals.css';
+import '../../globals.css';
 import { Inter } from 'next/font/google';
-import AccessibilityPanelClient from '@components/AccessibilityPanelClient';
+import AccessibilityPanelClient from '../../components/AccessibilityPanelClient';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Gerenciamento Operacional',
+  title: 'Gerenciamento Operacional Estoque',
   description: 'Gerenciamento de indicadores de estoque',
 };
 
