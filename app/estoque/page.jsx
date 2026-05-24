@@ -349,7 +349,7 @@ export default function EstoquePage() {
           }
           className="bg-gray-700 hover:bg-gray-800 px-4 py-2 rounded-lg"
         >
-          ← Dashboard
+          ← Home
         </button>
 
       </div>
